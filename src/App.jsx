@@ -34,15 +34,28 @@ const LANES = {
   footer: { x: 0, y: 0.4, z: 0, scale: 3.6, rotX: 0.05, rotZ: 0 },
 }
 
+/* On phones the content stacks full-width, so the shoe stays centred (no side
+ * lanes) and smaller, sitting behind the frosted cards as a 3D backdrop. */
+const MOBILE_LANES = {
+  hero: { x: 0, y: 0.5, z: 0.3, scale: 3.0, rotX: 0.12, rotZ: -0.05 },
+  specs: { x: -0.5, y: 0.6, z: 0.3, scale: 2.5, rotX: -0.15, rotZ: 0.08 },
+  gallery: { x: 0.5, y: 0.6, z: 0.3, scale: 2.5, rotX: 0.15, rotZ: -0.08 },
+  look: { x: 0, y: 0, z: 0.8, scale: 3.2, rotX: 0, rotZ: 0 },
+  buy: { x: 0, y: 0.3, z: 0.4, scale: 2.7, rotX: -0.1, rotZ: 0.06 },
+  footer: { x: 0, y: 0.4, z: 0, scale: 2.6, rotX: 0.05, rotZ: 0 },
+}
+
+const isMobile = () =>
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches
+
 /* Hook: when a section crosses the CENTRE of the screen, send the shoe to its
- * lane. The centre-band trigger works for any section height (tall galleries
- * never reach a 45% visibility threshold, which used to leave the shoe in the
- * previous lane and hide it behind the cards). */
+ * lane (picking the mobile or desktop lane set by viewport width). The
+ * centre-band trigger works for any section height. */
 function useLane(setLane, lane) {
   const ref = useRef(null)
   const inView = useInView(ref, { margin: '-45% 0px -45% 0px' })
   useEffect(() => {
-    if (inView) setLane(LANES[lane])
+    if (inView) setLane((isMobile() ? MOBILE_LANES : LANES)[lane])
   }, [inView, setLane, lane])
   return ref
 }
@@ -278,7 +291,7 @@ function Footer() {
 
 export default function App() {
   useLenis()
-  const target = useRef({ ...LANES.hero })
+  const target = useRef({ ...(isMobile() ? MOBILE_LANES : LANES).hero })
   const setLane = useCallback((lane) => {
     target.current = lane
   }, [])

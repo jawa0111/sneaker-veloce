@@ -1,5 +1,5 @@
 import { Suspense, useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import {
   Environment,
   ContactShadows,
@@ -46,6 +46,20 @@ function TravelingShoe({ target }) {
   )
 }
 
+/* Pull the camera back and widen the FOV on narrow/portrait screens so the
+ * centred shoe stays fully in frame on phones. */
+function ResponsiveCamera() {
+  const { size } = useThree()
+  const portrait = size.width < 768
+  return (
+    <PerspectiveCamera
+      makeDefault
+      position={[0, 0.4, portrait ? 9.2 : 7]}
+      fov={portrait ? 46 : 38}
+    />
+  )
+}
+
 export function Scene({ target, active = true }) {
   return (
     <Canvas
@@ -56,7 +70,7 @@ export function Scene({ target, active = true }) {
       dpr={[1, 1.4]}
       shadows={false}
     >
-      <PerspectiveCamera makeDefault position={[0, 0.4, 7]} fov={38} />
+      <ResponsiveCamera />
 
       <ambientLight intensity={0.7} />
       <directionalLight position={[5, 6, 4]} intensity={2.4} />
