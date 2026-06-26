@@ -1,0 +1,18 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# cloned design skill (separate repo)
+.uiux-skill/
+
+# large model backups (keep only the optimized shoe.glb)
+public/shoe-full-14mb.glb
+public/shoe-original-specgloss.glb
+
+# logs / os
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
