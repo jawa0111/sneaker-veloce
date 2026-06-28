@@ -1,4 +1,4 @@
-import { Suspense, useRef } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import {
   Environment,
@@ -60,7 +60,16 @@ function ResponsiveCamera() {
   )
 }
 
-export function Scene({ target, active = true }) {
+/* Mounts only after everything in its Suspense boundary (model + HDR) has
+   resolved — so its effect is the precise "scene is ready to show" signal. */
+function Loaded({ onReady }) {
+  useEffect(() => {
+    onReady()
+  }, [onReady])
+  return null
+}
+
+export function Scene({ target, active = true, onReady }) {
   return (
     <Canvas
       // Pause rendering entirely when the shoe is hidden (lower sections) — no
@@ -76,6 +85,10 @@ export function Scene({ target, active = true }) {
       <directionalLight position={[5, 6, 4]} intensity={2.4} />
       <pointLight position={[-4, 2, 3]} intensity={1.2} color="#d9a441" />
 
+      {/* Shoe AND its HDR environment share one boundary, so nothing draws
+          until the shoe is fully lit. That avoids the dark→light "blink" you'd
+          get if the reflections popped in a frame after the model. The stage
+          then fades in smoothly via onReady (see App). */}
       <Suspense fallback={null}>
         <TravelingShoe target={target} />
         <ContactShadows
@@ -88,6 +101,7 @@ export function Scene({ target, active = true }) {
           color="#000000"
         />
         <Environment preset="studio" />
+        {onReady && <Loaded onReady={onReady} />}
       </Suspense>
     </Canvas>
   )

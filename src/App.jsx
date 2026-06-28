@@ -303,16 +303,28 @@ export default function App() {
     target: lookRef,
     offset: ['start end', 'start start'],
   })
+  // Hide the shoe once the Lookbook poster is actually covering its centre, and
+  // do it as a fast cut (see .stage--hidden) so it never lingers as a
+  // translucent ghost in open view. Reappears smoothly on scroll-up.
   const [shoeHidden, setShoeHidden] = useState(false)
   useEffect(
-    () => lookProgress.on('change', (v) => setShoeHidden(v > 0.45)),
+    () => lookProgress.on('change', (v) => setShoeHidden(v > 0.5)),
     [lookProgress]
   )
 
+  // Keep the 3D layer invisible until the model + HDR are fully loaded, then
+  // fade it in smoothly — no dark→light flash on first paint.
+  const [ready, setReady] = useState(false)
+  const handleReady = useCallback(() => setReady(true), [])
+
   return (
     <>
-      <div className={`stage${shoeHidden ? ' stage--hidden' : ''}`}>
-        <Scene target={target} active={!shoeHidden} />
+      <div
+        className={`stage${ready ? '' : ' stage--loading'}${
+          shoeHidden ? ' stage--hidden' : ''
+        }`}
+      >
+        <Scene target={target} active={!shoeHidden} onReady={handleReady} />
       </div>
       <div className="bg-glow" />
 

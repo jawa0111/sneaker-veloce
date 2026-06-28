@@ -8,6 +8,11 @@
     <meta name="description" content="VELOCE AIR-9 — a limited drop. Engineered for motion, designed for legends." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Start the 2MB shoe model + the HDR environment CDN downloading the
+         instant the page is hit, in parallel with the JS bundle — so the 3D
+         shoe is ready to draw as soon as React mounts instead of after it. -->
+    <link rel="preload" as="fetch" href="/shoe.glb?v=5" crossorigin />
+    <link rel="preconnect" href="https://raw.githack.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"

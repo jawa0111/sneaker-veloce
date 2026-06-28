@@ -10,7 +10,7 @@ import { useGLTF } from '@react-three/drei'
  */
 // Bump ?v= whenever you replace /public/shoe.glb so the loader/browser
 // cache can't serve a stale model.
-const MODEL_URL = '/shoe.glb?v=4'
+const MODEL_URL = '/shoe.glb?v=5'
 
 export function Sneaker(props) {
   const { scene } = useGLTF(MODEL_URL)

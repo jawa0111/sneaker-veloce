@@ -36,7 +36,11 @@ img { display: block; max-width: 100%; }
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
   opacity: 1; transition: opacity 0.5s ease;
 }
-.stage--hidden { opacity: 0; }
+/* Fast cut-out so the shoe vanishes under the poster instead of lingering as a
+   translucent ghost. (Scroll-up reappear still uses the .stage 0.5s fade.) */
+.stage--hidden { opacity: 0; transition: opacity 0.12s linear; }
+/* Hidden until the model + HDR finish loading, then fades in (see App). */
+.stage--loading { opacity: 0; }
 .bg-glow {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background:
